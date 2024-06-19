@@ -25,14 +25,18 @@ jobs:
           docker save "${image}" -o "${image//\//_}-arm64.tar"
         done
 
+    - name: Get current date
+      id: date
+      run: echo "date=$(date +'%Y%m%d')" >> $GITHUB_ENV
+
     - name: Compress the TAR files
-      run: tar -czf arm64-images.tar.gz *-arm64.tar
+      run: tar -czf ${date}_arm64-images.tar.gz *-arm64.tar
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
         name: docker-images-tar
-        path: arm64-images.tar.gz
+        path: ${date}_arm64-images.tar.gz
         retention-days: 1  # 将保留天数设置为 1 天 最多可设置90天
 
     - name: Clean up intermediate files
